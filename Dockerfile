@@ -3,7 +3,7 @@ ARG IMAGE_VERSION=8.0-jre8
 
 FROM tomcat:$IMAGE_VERSION
 
-MAINTAINER Tim Sutton<tim@linfiniti.com>
+MAINTAINER Nick Forbes-Smith <nick.forbes-smith@data61.csiro.au>
 
 ## The Geoserver version
 ARG GS_VERSION=2.15.0
