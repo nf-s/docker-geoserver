@@ -19,8 +19,6 @@ create_dir ${FOOTPRINTS_DATA_DIR}
 create_dir ${resources_dir}
 pushd ${resources_dir}
 
-
-
 if [[ ! -f /tmp/resources/jre-8u201-linux-x64.tar.gz ]]; then \
     wget --progress=bar:force:noscroll -c --no-check-certificate --no-cookies --header \
     "Cookie: oraclelicense=accept-securebackup-cookie" \
@@ -41,11 +39,22 @@ create_dir ${work_dir}/plugins
 
 pushd ${work_dir}/plugins
 #Extensions
-
-array=(geoserver-$GS_VERSION-vectortiles-plugin.zip geoserver-$GS_VERSION-css-plugin.zip \
-geoserver-$GS_VERSION-csw-plugin.zip geoserver-$GS_VERSION-wps-plugin.zip geoserver-$GS_VERSION-printing-plugin.zip \
-geoserver-$GS_VERSION-libjpeg-turbo-plugin.zip geoserver-$GS_VERSION-control-flow-plugin.zip \
-geoserver-$GS_VERSION-pyramid-plugin.zip geoserver-$GS_VERSION-gdal-plugin.zip)
+array=(geoserver-$GS_VERSION-printing-plugin.zip \
+geoserver-$GS_VERSION-libjpeg-turbo-plugin.zip  \
+geoserver-$GS_VERSION-control-flow-plugin.zip \
+geoserver-$GS_VERSION-pyramid-plugin.zip  \
+geoserver-$GS_VERSION-gdal-plugin.zip \
+geoserver-$GS_VERSION-h2-plugin.zip \
+geoserver-$GS_VERSION-feature-pregeneralized-plugin.zip \
+geoserver-$GS_VERSION-querylayer-plugin.zip \
+geoserver-$GS_VERSION-css-plugin.zip \
+geoserver-$GS_VERSION-monitor-plugin.zip \
+geoserver-$GS_VERSION-ysld-plugin.zip \
+geoserver-$GS_VERSION-netcdf-plugin.zip \
+geoserver-$GS_VERSION-vectortiles-plugin.zip \
+geoserver-$GS_VERSION-wps-plugin.zip \
+geoserver-$GS_VERSION-sldservice-plugin.zip \
+geoserver-$GS_VERSION-csw-plugin.zip)
 for i in "${array[@]}"
 do
     url="https://sourceforge.net/projects/geoserver/files/GeoServer/${GS_VERSION}/extensions/${i}/download"
@@ -207,3 +216,22 @@ if [[ "${TOMCAT_EXTRAS}" = false ]]; then \
 
 # Delete resources after installation
 rm -rf /tmp/resources
+
+# Enable CORS - Adapted from https://github.com/oscarfonts/docker-geoserver (MIT License)
+RUN sed -i '\:</web-app>:i\
+<filter>\n\
+    <filter-name>CorsFilter</filter-name>\n\
+    <filter-class>org.apache.catalina.filters.CorsFilter</filter-class>\n\
+    <init-param>\n\
+        <param-name>cors.allowed.origins</param-name>\n\
+        <param-value>*</param-value>\n\
+    </init-param>\n\
+    <init-param>\n\
+        <param-name>cors.allowed.methods</param-name>\n\
+        <param-value>GET,POST,HEAD,OPTIONS,PUT</param-value>\n\
+    </init-param>\n\
+</filter>\n\
+<filter-mapping>\n\
+    <filter-name>CorsFilter</filter-name>\n\
+    <url-pattern>/*</url-pattern>\n\
+</filter-mapping>' ${CATALINA_HOME}/webapps/geoserver/WEB-INF/web.xml

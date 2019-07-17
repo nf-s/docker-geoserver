@@ -4,7 +4,7 @@
 # This represents the version we need GeoServer to move up to. ie the latest stable version.
 # Change this to reflect changes
 BUGFIX=0
-MINOR=14
+MINOR=15
 MAJOR=2
 
 #Represents the current version defined in the Dockerfile and used in the setup script
@@ -15,7 +15,7 @@ OLD_BUGFIX=0
 # Build Geoserver
 echo "Building GeoServer using the specified version "
 sed -i "s/${OLD_MAJOR}.${OLD_MINOR}.${OLD_BUGFIX}/${MAJOR}.${MINOR}.${BUGFIX}/g" Dockerfile
-docker build --build-arg GS_VERSION=${MAJOR}.${MINOR}.${BUGFIX} -t kartoza/geoserver:${MAJOR}.${MINOR}.${BUGFIX} .
+docker build --build-arg GS_VERSION=${MAJOR}.${MINOR}.${BUGFIX} -t nfs1234/nfs:geoserver-${MAJOR}.${MINOR}.${BUGFIX} .
 
 # Build Arguments - To change the defaults when building the image
 #need to specify a different value.
